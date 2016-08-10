@@ -1,27 +1,32 @@
-// var Xray = require("x-ray");
-// var xray = new Xray;
-
-// xray('https://www.inshorts.com/en/read/', 'title')
-// .write('results.json');
-
-
 var Xray = require("x-ray");
 var xray = new Xray;
+var express = require('express');
+var app = express();
 
-// xray('https://www.inshorts.com/en/read/', 'a', [{a:'', href:'@href'}])
-// .write('results.json');
+var port = process.env.PORT || 3000;
 
-//xray('https://www.inshorts.com/en/read/', 'title')(function(err, title) {
-	xray('https://www.inshorts.com/en/read/', '.news-card-image',[['img@src']]	)(function(err, title) {
+app.get('/', function(req, res) {
+	res.send('<html><head></head><body><h1>Hello world!</h1></body></html>');
+});
 
-  //console.log(title); // Google
+app.get('/api', function(req, res) {
+	res.json({ firstname: 'Prashant', lastname: 'Yadav' });
+});
 
-  if(err){
-  	console.log(err);
-  }
-  else{
-  	console.log(title);
-  }
-  
-})
-.write('results.json');
+app.get('/api/inshorts', function(req, res, next){
+
+	 xray('https://www.inshorts.com/en/read/', '.news-card',[{
+	 	image: xray('.news-card-image','img@src'),
+	 	title: '.news-card-title span',
+	 	content:'.news-card-content div',
+	 	author: '.news-card-author-time span.author',
+	 	time:'.news-card-author-time span.time',
+	 	// date: xray('.news-card-author-time span', 'span@content'),
+	 	footer: xray('.read-more', 'a@href')
+
+	 }]).write().pipe(res);
+
+});
+
+app.listen(port);
+console.log("listening on localhost:3000/api/inshorts");

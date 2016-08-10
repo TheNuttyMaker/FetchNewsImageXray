@@ -8,5 +8,9 @@
   },
 
   "author": "Prashant",
-  "license": "ISC"
+  "license": "ISC".
+    "dependencies": {
+    "express": "^4.13.4",
+    "x-ray": "^2.3.0"
+  }
 }
