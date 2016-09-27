@@ -1,5 +1,20 @@
 var Xray = require("x-ray");
-var xray = new Xray;
+var xray = new Xray({
+  filters: {
+    trim: function (value) {
+      return typeof value === 'string' ? value.trim() : value
+    },
+    reverse: function (value) {
+      return typeof value === 'string' ? value.split('').reverse().join('') : value
+    },
+    slice: function (value) {
+      var start = value.indexOf("'");
+      var end = value.lastIndexOf("?");
+      return typeof value === 'string' ? value.slice(start+1, end) : value
+    }
+  }
+});
+
 var express = require('express');
 var app = express();
 
@@ -16,7 +31,7 @@ app.get('/api', function(req, res) {
 app.get('/api/inshorts', function(req, res, next){
 
 	 xray('https://www.inshorts.com/en/read/', '.news-card',[{
-	 	image: xray('.news-card-image','img@src'),
+	 	image: 'div.news-card-image@style  | slice',
 	 	title: '.news-card-title span',
 	 	content:'.news-card-content div',
 	 	author: '.news-card-author-time span.author',
